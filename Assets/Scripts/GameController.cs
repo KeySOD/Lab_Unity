@@ -7,22 +7,27 @@ using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour
 {
-
+	[Header("References")]
+	[SerializeField] private Wallet _wallet;
+	[Header("References/UI")]
+	[SerializeField] private GameObject _mainMenuPanel;
 	private CubePos nowCube = new CubePos(0, 1, 0);
 	public float cubeChangePlaceSpeed = 0.5f;
 	public Transform cubeToPlace;
 	private float camMoveToYPosition, camMoveSpeed = 2f;
 
 	public Text scoreTxt;
-
+	[Header("References/Cubes")]
 	public GameObject[] cubesToCreate;
 	public GameObject allCubes, vfx;
-	public GameObject[] canvasStartPaage;
+	[Header("References/Sounds")]
+	[SerializeField] private Audio_Manager _audioManager;
+	[SerializeField] private AudioClip _cubePlaceSound;
 	private Rigidbody allCubesRb;
 
 	public Color[] bgColors;
 	private Color toCameraColor;
-	
+	private float _coinsMultiplier;
 
 	private bool IsLose, firstCube;
 
@@ -85,10 +90,7 @@ public class GameController : MonoBehaviour
 			if (!firstCube) 
 			{
 				firstCube = true;
-				foreach (GameObject obj in canvasStartPaage)
-				{
-					Destroy(obj);
-				}
+				_mainMenuPanel.SetActive(false);
 			}
 
 			GameObject createCube = posibleCubesToCreate.Count == 1 ? posibleCubesToCreate[0] : posibleCubesToCreate[UnityEngine.Random.Range(0, posibleCubesToCreate.Count)];
@@ -96,12 +98,13 @@ public class GameController : MonoBehaviour
 			newCube.transform.SetParent(allCubes.transform);
 			nowCube.setVector(cubeToPlace.position);
 			allCubesPositions.Add(nowCube.getVector());
-
-			if (PlayerPrefs.GetString("music") != "No")
-			{
-				GetComponent<AudioSource>().Play();
-			}
-
+			//
+			if(_cubePlaceSound) _audioManager.PlaySound(_cubePlaceSound);
+			_wallet.CoinsCount += 5f * _coinsMultiplier;
+			_wallet.RefreshUI();
+			_wallet.SaveData();
+			_coinsMultiplier++;
+			//
 			GameObject newVfx = Instantiate(vfx, newCube.transform.position, Quaternion.identity) as GameObject;
 			Destroy(newVfx, 1.5f);
 
