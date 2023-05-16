@@ -8,20 +8,25 @@ public class Shop : MonoBehaviour
     [SerializeField] private List<Skin> _skinsList;
     [SerializeField] private GameObject _skinCellExample;
     [SerializeField] private Wallet _wallet;
+
     [Header("References/UI")]
     [SerializeField] private Transform _skinsContent;
     [SerializeField] private Text _costText;
+
     [Header("References/UI/BuyEquipButton")]
     [SerializeField] private Button _button;
     [SerializeField] private Text _buttonText;
+
     [Header("References/Audio")]
     [SerializeField] private Audio_Manager _audioManager;
     [SerializeField] private AudioClip _skinChooseSound;
+    
     [Header("References/Cube")]
     [SerializeField] private Material _mainCubeMaterial;
     [SerializeField] private Material _cubeShowcaseMaterial;
     private List<GameObject> _createdSkinCells = new List<GameObject>();
     private Skin _lastChoosedSkin;
+    
     private void Start()
     {
         ResetCubeInfo();

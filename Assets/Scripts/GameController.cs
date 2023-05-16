@@ -4,25 +4,33 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class GameController : MonoBehaviour
 {
 	[Header("References")]
 	[SerializeField] private Wallet _wallet;
+
 	[Header("References/UI")]
 	[SerializeField] private GameObject _mainMenuPanel;
+	[SerializeField] private GameObject _playergField;
+	[SerializeField] private TMP_InputField _playergFieldText;
+
 	private CubePos nowCube = new CubePos(0, 1, 0);
 	public float cubeChangePlaceSpeed = 0.5f;
 	public Transform cubeToPlace;
 	private float camMoveToYPosition, camMoveSpeed = 2f;
-
 	public Text scoreTxt;
+	
+	
 	[Header("References/Cubes")]
 	public GameObject[] cubesToCreate;
 	public GameObject allCubes, vfx;
+	
 	[Header("References/Sounds")]
 	[SerializeField] private Audio_Manager _audioManager;
 	[SerializeField] private AudioClip _cubePlaceSound;
+	
 	private Rigidbody allCubesRb;
 
 	public Color[] bgColors;
@@ -73,14 +81,14 @@ public class GameController : MonoBehaviour
 			AddPossibleCubes(10);
 
 
-
-		scoreTxt.text = "<size=35><color=#E8393E>best</color></size>" + PlayerPrefs.GetInt("score") + "\n<size=22>now:</size> 0";
+		scoreTxt.text = "<size=40><color=#E8393E>Best: </color></size>" + PlayerPrefs.GetInt("score") + "\n<size=30>Now: </size>" + PlayerPrefs.GetString(_playergFieldText.text);	
 		toCameraColor = Camera.main.backgroundColor;
 		mainCam = Camera.main.transform;
 		camMoveToYPosition = 5.9f + nowCube.y - 1f;
 
 		allCubesRb = allCubes.GetComponent<Rigidbody>();
 		showCubePlace=StartCoroutine(ShowCubePlace());
+		Debug.Log(_playergFieldText); 
 	}
 
 	private void Update()
@@ -91,6 +99,7 @@ public class GameController : MonoBehaviour
 			{
 				firstCube = true;
 				_mainMenuPanel.SetActive(false);
+				_playergField.SetActive(false);
 			}
 
 			GameObject createCube = posibleCubesToCreate.Count == 1 ? posibleCubesToCreate[0] : posibleCubesToCreate[UnityEngine.Random.Range(0, posibleCubesToCreate.Count)];
@@ -213,7 +222,7 @@ public class GameController : MonoBehaviour
 		if (PlayerPrefs.GetInt("score") < maxY)
 			PlayerPrefs.SetInt("score", maxY);
 
-		scoreTxt.text = "<size=35><color=#E8393E>best</color></size> " + PlayerPrefs.GetInt("score") + "\n<size=22>now:</size>" + maxY;
+		scoreTxt.text = "<size=40><color=#E8393E>Best: </color></size> " + PlayerPrefs.GetInt("score") + "\n<size=30>Now: </size>" + maxY;
 
 		camMoveToYPosition = 5.9f + nowCube.y - 1f;
 
